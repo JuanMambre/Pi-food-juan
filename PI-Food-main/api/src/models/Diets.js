@@ -2,14 +2,16 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define(
-    'diet',
+    'diets',
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
+        allowNull: false,
       },
-      Nombre: {
-        type: DataTypes.STRING(20),
+      name: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },

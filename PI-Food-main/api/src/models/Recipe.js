@@ -8,23 +8,33 @@ module.exports = (sequelize) => {
       primaryKey: true,
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
     },
-    Nombre: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Descripcion: {
+    dietTypes: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    summary: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    NivelDeSalud: {
+    healthScore: {
       type: DataTypes.INTEGER,
       validate: {
         min: 0,
-        max: 10,
+        max: 100,
       },
+      allowNull: false,
     },
-    Pasos: {
+    steps: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    image: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
