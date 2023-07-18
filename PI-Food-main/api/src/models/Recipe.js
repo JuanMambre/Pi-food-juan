@@ -10,11 +10,7 @@ module.exports = (sequelize) => {
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    dietTypes: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },

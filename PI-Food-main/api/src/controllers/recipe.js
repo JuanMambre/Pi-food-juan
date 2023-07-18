@@ -1,11 +1,12 @@
 const axios = require('axios');
-
+const { Op } = require('sequelize');
 const { Recipe, Diets } = require('../db');
 
 const getApiInfo = async () => {
   const apiUrl = await axios.get(
     `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&addRecipeInformation=true&number=100`
   );
+
   const apiInfo = await apiUrl.data.map((e) => {
     return {
       id: e.id,
@@ -47,12 +48,29 @@ const getDbById = async (id) => {
   return await Recipe.findByPk(id, {
     include: {
       model: Diets,
-      attributes: ['name'],
-      through: {
-        attributes: [],
-      },
     },
   });
+};
+
+const getAll = async (id) => {
+  if (isNaN(id)) {
+    let dbData = await Recipe.findByPk(id, {
+      where: {
+        id: {
+          [Op.iLike]: `%${id}%`,
+        },
+      },
+      include: {
+        model: Diets,
+      },
+    });
+    return dbData ? dbData.toJSON() : null;
+  } else {
+    let apiData = await axios.get(
+      `https://api.spoonacular.com/recipes/${id}/information?apiKey=${process.env.REACT_APP_API_KEY}`
+    );
+    return apiData;
+  }
 };
 
 module.exports = {
@@ -60,4 +78,5 @@ module.exports = {
   getDbInfo,
   getApiById,
   getDbById,
+  getAll,
 };

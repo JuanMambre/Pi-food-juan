@@ -1,104 +1,89 @@
 const { Router } = require('express');
-const { getDbById, getApiById, getDbInfo } = require('../controllers/recipe');
-const { Recipe } = require('../db');
+const {
+  getDbById,
+  getApiById,
+  getDbInfo,
+  getApiInfo,
+  getAll,
+} = require('../controllers/recipe');
+const { Recipe, Diets } = require('../db');
 const { default: axios } = require('axios');
+const { Op } = require('sequelize');
 
 const recipeRouter = Router();
 
 recipeRouter.get('/:id', async (req, res) => {
-  //funciona
   const { id } = req.params;
   try {
-    if (id.length > 10) {
-      let dbId = await getDbById(id);
-      return res.status(200).json(dbId);
+    if (id.includes('-')) {
+      let dbRecipeInfo = await getDbById(id);
+      return res.status(200).json(dbRecipeInfo);
     } else {
-      let apiId = await getApiById(id);
-      if (apiId.data.id) {
-        let info = {
-          id: apiId.data.id,
-          name: apiId.data.title,
-          summary: apiId.data.summary,
-          healthScore: apiId.data.healthScore,
-          steps: apiId.data.analyzedInstructions[0]?.steps.map((element) => {
-            return {
-              number: element.number,
-              step: element.step,
-            };
-          }),
-          dietTypes: apiId.data.diets,
-          image: apiId.data.image,
+      apiRecipeInfo = await getApiById(id);
+      if (apiRecipeInfo.data.id) {
+        let recipeDetails = {
+          id: apiRecipeInfo.data.id,
+          name: apiRecipeInfo.data.title,
+          summary: apiRecipeInfo.data.summary,
+          healthScore: apiRecipeInfo.data.healthScore,
+          steps: apiRecipeInfo.data.analyzedInstructions[0]?.steps.map(
+            (element) => {
+              return {
+                number: element.number,
+                step: element.step,
+              };
+            }
+          ),
+          dietTypes: apiRecipeInfo.data.diets,
+          image: apiRecipeInfo.data.image,
         };
-        return res.status(200).send(info);
+        return res.status(200).send(recipeDetails);
       }
     }
-  } catch {
-    return res.status(404).send('Recipe not found!');
+  } catch (err) {
+    return res.status(404).send(err);
   }
 });
 
+//=========================================
 recipeRouter.get('/', async (req, res) => {
-  //funciona
   const { name } = req.query;
 
-  const response = await axios.get(
+  const apiData = await axios.get(
     `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&addRecipeInformation=true&number=100`
   );
-  const recipes = response.data.results;
 
-  const getAll = async () => {
-    const dataBaseInfo = await getDbInfo();
+  const apiDataRes = apiData.data.results;
+  const dbData = await getDbInfo();
+  const totalData = apiDataRes.concat(dbData);
 
-    const total = recipes.concat(dataBaseInfo);
-
-    return total;
-  };
   try {
     if (name) {
-      const allRecipe = await getAll();
-      let recipe = allRecipe.filter(
-        (recipe) => recipe.title.toLowerCase() === name.toLowerCase()
+      let filteredRecipe = totalData.filter((r) =>
+        r.title.toLowerCase().includes(name.toLowerCase())
       );
-
-      if (recipe) {
-        let recipeMap1 = recipe.map((e) => {
-          return {
-            // id: e.id,
-            name: e.title,
-            dietTypes: e.diets,
-            summary: e.summary,
-            image: e.image,
-            healthScore: e.healthScore,
-          };
-        });
-        res.status(200).json(recipeMap1);
+      if (filteredRecipe.length > 0) {
+        res.status(200).send(filteredRecipe);
       } else {
-        res.status(404).send('No recipe found.');
+        res.status(400).send('Recipe not found.');
       }
     } else {
-      let recipeMap2 = recipes.map((e) => {
-        return {
-          name: e.title,
-          dietTypes: e.diets,
-          summary: e.summary,
-          image: e.image,
-          healthScore: e.healthScore,
-        };
-      });
-      res.status(200).json(recipeMap2);
+      res.status(200).json(totalData);
     }
-  } catch (error) {
-    res.send(error);
+  } catch (err) {
+    console.error(err);
   }
 });
+
+//====================
 
 recipeRouter.post('/create', async (req, res) => {
   //funciona
   try {
-    const { name, summary, healthScore, steps, image, dietTypes } = req.body;
-    if (name && summary && healthScore && steps && image && dietTypes) {
+    const { title, summary, healthScore, steps, image, dietTypes } = req.body;
+    if (title && summary && healthScore && steps && image && dietTypes) {
       const newRecipe = await Recipe.create({
-        name,
+        title,
         summary,
         healthScore,
         steps,
@@ -111,7 +96,7 @@ recipeRouter.post('/create', async (req, res) => {
       return res.status(404).json('Error, missing data.');
     }
   } catch (error) {
-    return res.send(error);
+    return res.status(500).send(error);
   }
 });
 

@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 0 1.5rem 0;
+    background-color: #292a2b;
+    color: whitesmoke;
+    margin-bottom: 1.5rem;
+    gap: 15px;
+  }
+  
+  .navbar-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: black;
+    color:whitesmoke;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all ease .5s;
+  }
+
+  .navbar-button:hover {
+    background-color: darkgrey;
+    color: white;
+  }
+  
+  .search-input {
+    width: 400px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 5px;
+    background-color: black;
+    color: whitesmoke;
+  }
