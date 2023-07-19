@@ -65,6 +65,8 @@ const Create = () => {
     dietTypes: [],
   });
 
+  const [dietsBackup, setDietsBackup] = useState([]);
+
   useEffect(() => {
     if (Validations(recipeData)) {
       setErrors(Validations(recipeData));
@@ -162,8 +164,6 @@ const Create = () => {
           value={recipeData.title}
         />
         <p className='error'>{errors.title}</p>
-        <hr />
-
         <label htmlFor='summary'>Summary: </label>
         <textarea
           onChange={(event) => handleChange(event)}
@@ -174,8 +174,6 @@ const Create = () => {
           value={recipeData.summary}
         />
         <p className='error'>{errors.summary}</p>
-        <hr />
-
         <label htmlFor='healthScore'>Health Score: </label>
         <input
           onChange={(event) => handleChange(event)}
@@ -183,10 +181,9 @@ const Create = () => {
           name='healthScore'
           placeholder='Health Score'
           value={recipeData.healthScore}
+          required
         />
         <p className='error'>{errors.healthScore}</p>
-        <hr />
-
         <label htmlFor='steps'>Steps: </label>
         <textarea
           onChange={(event) => handleChange(event)}
@@ -194,10 +191,9 @@ const Create = () => {
           name='steps'
           placeholder='Steps'
           value={recipeData.steps}
+          required
         />
         <p className='error'>{errors.steps}</p>
-        <hr />
-
         <label htmlFor='image'>Image: </label>
         <input
           onChange={(event) => handleChange(event)}
@@ -205,17 +201,16 @@ const Create = () => {
           name='image'
           placeholder='Image'
           value={recipeData.image}
+          required
         />
         <p className='error'>{errors.image}</p>
-        <hr />
-
         <label htmlFor='dietTypes'>Diet Types: </label>
         <select
           name='dietTypes'
-          id='dietTypes'
           placeholder='Diet Types'
           defaultValue='def'
           onChange={(event) => handleSelect(event)}
+          required
         >
           <option
             value='def'
@@ -249,9 +244,7 @@ const Create = () => {
               </div>
             ))
           ) : (
-            <p className='no-dietTypes'>
-              No se han seleccionado tipos de dieta
-            </p>
+            <p className='no-dietTypes'>No diet selected.</p>
           )}
         </div>
 

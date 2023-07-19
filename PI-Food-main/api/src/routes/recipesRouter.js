@@ -90,7 +90,7 @@ recipeRouter.post('/create', async (req, res) => {
         dietTypes,
         image,
       });
-      let response = await newRecipe.setDiets(dietTypes);
+      let response = await newRecipe.setDiets(dietTypes); //setDiets?
       res.status(200).send(response);
     } else {
       return res.status(404).json('Error, missing data.');

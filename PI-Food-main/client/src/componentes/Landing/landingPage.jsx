@@ -9,7 +9,7 @@ const Landing = () => {
     >
       {/* <section class='landing_left'></section> */}
       <section class='landing_right'>
-        <h1 class='landing_title'>Welcome to my food&apos;s page</h1>
+        <h1 class='landing_title'>WELCOME</h1>
         <NavLink to='/home'>
           <button class='landing_button'>Let&apos; get started!</button>
         </NavLink>

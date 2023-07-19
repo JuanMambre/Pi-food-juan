@@ -70,7 +70,7 @@ const getAll = async (id) => {
       `https://api.spoonacular.com/recipes/${id}/information?apiKey=${process.env.REACT_APP_API_KEY}`
     );
     return apiData;
-  }
+  } //select de filtro x dieta?? no me acuerdo.
 };
 
 module.exports = {

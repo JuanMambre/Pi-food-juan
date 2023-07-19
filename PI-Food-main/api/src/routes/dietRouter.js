@@ -6,14 +6,14 @@ const dietRouter = Router();
 dietRouter.get('/diet', async (req, res) => {
   //funciona
   try {
-    const tipoDieta = await Diets.findAll();
-    if (tipoDieta.length > 0) {
-      res.status(200).json(tipoDieta);
+    const dietTypes = await Diets.findAll();
+    if (dietTypes.length > 0) {
+      res.status(200).json(dietTypes);
     } else {
       let recipes = await axios.get(
         `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&addRecipeInformation=true&number=100`
       );
-      const diets = recipes.data.results.flatMap((e) => e.diets); //array
+      const diets = recipes.data.results.flatMap((e) => e.diets); //array  //xq flatmap?
       for (let i = 0; i < diets.length; i++) {
         Diets.findOrCreate({
           where: {
@@ -22,8 +22,8 @@ dietRouter.get('/diet', async (req, res) => {
         });
       }
 
-      const tiposDietaActualizados = await Diets.findAll();
-      res.status(200).json(tiposDietaActualizados);
+      const dietTypesActualized = await Diets.findAll();
+      res.status(200).json(dietTypesActualized);
     }
   } catch (error) {
     res.send(error);

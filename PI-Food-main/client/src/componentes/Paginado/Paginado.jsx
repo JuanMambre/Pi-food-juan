@@ -9,7 +9,7 @@ export default function PaginationComponent({
   recipeXPage,
   pages,
 }) {
-  const arrPages = [];
+  const arrPages = []; //guardo todas las pags
   for (let i = 1; i <= Math.ceil(recipesAll / recipeXPage); i++) {
     arrPages.push(i);
   }

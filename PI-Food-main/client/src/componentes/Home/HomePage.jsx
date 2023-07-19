@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import NavBar from '../SearchBar/NavBar';
 import Card from '../Card/Card';
 import Paginado from '../Paginado/Paginado';
+import SideBar from '../SideBar/SideBar';
+import Loading from '../Loading/Loading';
 import { useDispatch, useSelector } from 'react-redux'; //useSelector
 import { getAllRecipes, getDiets } from '../../Redux/Actions';
 import './Home.css';
@@ -10,14 +12,20 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const allRecipes = useSelector((state) => state.recipes);
 
+  const [sideBar, setSideBar] = useState(false);
+
+  const openSideBar = () => {
+    setSideBar(!sideBar);
+  };
+
   const [page, setPage] = useState(1);
   let [recipeXPage] = useState(9);
-  const indexOfLastRecipe = page * recipeXPage;
-  const indexOfFirstRecipe = indexOfLastRecipe - recipeXPage;
+  const indexOfLastRecipe = page * recipeXPage; //9
+  const indexOfFirstRecipe = indexOfLastRecipe - recipeXPage; //0
   const currentRecipes = allRecipes.slice(
     indexOfFirstRecipe,
     indexOfLastRecipe
-  );
+  ); //arr y agarra entre 0 y 9
 
   const [minPageNumber, setMinPageNumber] = useState(0);
   const [maxPageNumber, setMaxPageNumber] = useState(5);
@@ -44,7 +52,16 @@ const HomePage = () => {
 
   return (
     <div className='home-main'>
-      <NavBar setPage={setPage} />
+      <NavBar
+        openSideBar={openSideBar}
+        sideBar={sideBar}
+        setPage={setPage}
+      />
+      <SideBar
+        setPage={setPage}
+        openSideBar={openSideBar}
+        sideBar={sideBar}
+      />
       <div className='card-container'>
         {currentRecipes.length ? (
           currentRecipes.map((r) => {
@@ -59,7 +76,9 @@ const HomePage = () => {
             );
           })
         ) : (
-          <div>Loading data...</div>
+          <div>
+            <Loading />
+          </div>
         )}
       </div>
       <Paginado

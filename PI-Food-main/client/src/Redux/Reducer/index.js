@@ -13,6 +13,7 @@ const initialState = {
   allRecipes: [],
   dietTypes: [],
   recipeDetails: [],
+  filteredDiets: [],
 };
 
 export default function rootReducer(state = initialState, action) {
@@ -68,13 +69,13 @@ export default function rootReducer(state = initialState, action) {
       let sortedRecipesScore =
         action.payload === 'asc'
           ? state.recipes.slice().sort((a, b) => {
-              if (a.healthScore > b.healthScore) return 1;
-              if (a.healthScore < b.healthScore) return -1;
+              if (a.healthScore > b.healthScore) return -1;
+              if (a.healthScore < b.healthScore) return 1;
               return 0;
             })
           : state.recipes.slice().sort((a, b) => {
-              if (a.healthScore > b.healthScore) return -1;
-              if (a.healthScore < b.healthScore) return 1;
+              if (a.healthScore > b.healthScore) return 1;
+              if (a.healthScore < b.healthScore) return -1;
               return 0;
             });
       return {
@@ -83,13 +84,20 @@ export default function rootReducer(state = initialState, action) {
       };
 
     case FILTER_BY_DIETS:
-      let recipes = state.allRecipes;
-      const recipesFilter = recipes.filter(
-        (r) => r.diets && r.diets.some((re) => re === action.payload)
-      );
+      const dietType = action.payload;
+      const finalDiets = state.allRecipes.filter((rec) => {
+        const diets = rec.diets;
+
+        if (diets.some((e) => e.name === dietType)) {
+          const dietsName = diets.map((diet) => diet.name);
+          return dietsName.includes(dietType);
+        } else {
+          return diets.includes(dietType);
+        }
+      });
       return {
         ...state,
-        recipes: recipesFilter,
+        recipes: finalDiets,
       };
 
     default:

@@ -8,6 +8,11 @@
   font-family: 'Poppins', sans-serif;
 }
 
+body {
+  background-color: #202225;
+  height: 100%;
+}
+
 a, a:visited {
  text-decoration: none;
  color: white; 

@@ -94,6 +94,7 @@
   
   .create-form .submit-button:hover {
     background-color: darkgrey;
+    color:black
   }
   
   .create-form .back-button {
@@ -110,6 +111,7 @@
   
   .create-form .back-button:hover {
     background-color: darkgray;
+    color:black
   }
 
 

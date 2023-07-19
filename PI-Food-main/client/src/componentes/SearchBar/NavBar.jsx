@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  filterByDiets,
-  getAllRecipes,
-  getRecipesByName,
-  sortRecipesByName,
-  sortRecipesByScore,
-} from '../../Redux/Actions';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { getAllRecipes, getDiets, getRecipesByName } from '../../Redux/Actions';
 import { NavLink } from 'react-router-dom';
 import './SearchBar.css';
+import Menu from '../Icons/Menu.jsx';
 
-const SearchBar = ({ setPage }) => {
+const SearchBar = ({ openSideBar, setPage }) => {
   const dispatch = useDispatch();
-  const diets = useSelector((state) => state.dietTypes);
 
   const [name, setName] = useState('');
 
@@ -31,24 +25,20 @@ const SearchBar = ({ setPage }) => {
     setName(event.target.value);
   };
 
-  const handleSortByName = (event) => {
-    dispatch(sortRecipesByName(event.target.value));
+  const refresh = () => {
+    dispatch(getAllRecipes());
+    dispatch(getDiets());
     setPage(1);
-  };
-
-  const handleSortByScore = (event) => {
-    dispatch(sortRecipesByScore(event.target.value));
-    setPage(1);
-  };
-
-  const handleFilterByDiets = (event) => {
-    event.preventDefault();
-    setPage(1);
-    dispatch(filterByDiets(event.target.value));
   };
 
   return (
     <div className='navbar'>
+      <span className='navbar-menu-container'>
+        <Menu
+          className='navbar-menu'
+          onClick={openSideBar}
+        />
+      </span>
       <form
         className='search-bar'
         onSubmit={handleSearchSubmit}
@@ -69,35 +59,12 @@ const SearchBar = ({ setPage }) => {
       <NavLink to='/create'>
         <button className='navbar-button'>Create</button>
       </NavLink>
-
-      <select
-        name='sort'
-        onChange={(event) => handleSortByName(event)}
+      <button
         className='navbar-button'
+        onClick={() => refresh()}
       >
-        <option value='asc'>A-Z</option>
-
-        <option value='dsc'>Z-A</option>
-      </select>
-      <select
-        name='sort'
-        onChange={(event) => handleSortByScore(event)}
-        className='navbar-button'
-      >
-        <option value='asc'>0-100</option>
-
-        <option value='dsc'>100-0</option>
-      </select>
-      <select onChange={(event) => handleFilterByDiets(event)}>
-        {diets &&
-          diets.map((die) => (
-            <option
-              key={die.name}
-              value={die.name}
-              label={die.name}
-            />
-          ))}
-      </select>
+        Refresh
+      </button>
     </div>
   );
 };

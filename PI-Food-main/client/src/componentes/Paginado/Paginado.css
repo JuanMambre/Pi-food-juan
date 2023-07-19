@@ -1,7 +1,7 @@
 .pagination-component {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    padding: 15px;
   }
   
   .pagination-container {
@@ -24,8 +24,8 @@
   
   .pagination-button.prev svg,
   .pagination-button.next svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
   
   .pagination-button.prev {
